@@ -1,0 +1,18 @@
+{
+  "name": "KBM Toolkit",
+  "short_name": "KBM Toolkit",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f1f5f9",
+  "theme_color": "#0f766e",
+  "description": "Klinik Berhenti Merokok Education & Clerking Tool",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any maskable"
+    }
+  ]
+}
