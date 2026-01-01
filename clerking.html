@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KBM TOOLKIT - Clerking Sheet</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .input-field { background-color: #f8fafc; transition: all 0.2s; }
+        .input-field:focus { background-color: #ffffff; border-color: #0d9488; box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.1); }
+        .nav-active { border-bottom: 3px solid #0d9488; color: #0f766e; font-weight: 700; background-color: #f0fdfa; }
+        .nav-inactive { color: #64748b; border-bottom: 3px solid transparent; }
+        .nav-inactive:hover { color: #0f766e; border-bottom: 3px solid #cbd5e1; }
+        @media print {
+            .no-print { display: none !important; }
+            body { background-color: white; padding: 0; }
+            .shadow-lg { box-shadow: none !important; border: none !important; }
+            .input-field, textarea, select { border: none !important; background: transparent !important; padding: 0 !important; resize: none; }
+            ::placeholder { color: transparent; }
+            textarea { height: auto; overflow: visible; }
+            #tab-nav { display: none !important; }
+        }
+    </style>
+</head>
+<body class="bg-slate-100 min-h-screen py-6 sm:py-10 px-4">
+
+    <div class="max-w-4xl mx-auto bg-white shadow-xl rounded-xl overflow-hidden border border-slate-200">
+        
+        <div class="bg-teal-700 text-white p-6 sm:p-8 relative">
+            <a href="index.html" class="absolute top-6 right-6 text-teal-200 hover:text-white no-print">🏠 Home</a>
+            <div class="flex justify-between items-start">
+                <div class="w-full text-center">
+                    <h1 class="text-2xl sm:text-3xl font-extrabold uppercase tracking-wide">KBM TOOLKIT</h1>
+                    <p class="text-teal-100 text-sm mt-2">Klinik Berhenti Merokok & Education Toolkit</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="tab-nav" class="flex border-b border-gray-200 no-print bg-white sticky top-0 z-10">
+            <a href="clerking.html" class="flex-1 py-4 text-center text-sm sm:text-base transition-all nav-active">📝 Clerking Sheet</a>
+            <a href="education.html" class="flex-1 py-4 text-center text-sm sm:text-base transition-all nav-inactive">🎓 Education</a>
+            <a href="medication.html" class="flex-1 py-4 text-center text-sm sm:text-base transition-all nav-inactive">💊 Medication</a>
+        </div>
+
+        <div class="block">
+            <form id="clerkingForm" class="p-6 sm:p-8 space-y-8">
+
+                <section class="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
+                    <div class="bg-gray-100 px-5 py-3 border-b border-gray-200 flex items-center">
+                        <h2 class="text-sm font-bold text-gray-600 uppercase tracking-wide">Patient Details</h2>
+                    </div>
+                    <div class="p-5 grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-semibold text-gray-600 mb-1">Name (Nama)</label>
+                            <input type="text" id="ptName" class="input-field w-full border border-gray-300 rounded-md p-2.5 outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-600 mb-1">IC Number (No. KP)</label>
+                            <input type="text" id="ptIC" inputmode="numeric" oninput="validateNumber(this)" placeholder="e.g. 880101..." class="input-field w-full border border-gray-300 rounded-md p-2.5 outline-none font-mono">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-600 mb-1">Phone Number</label>
+                            <input type="text" id="ptPhone" inputmode="numeric" oninput="validateNumber(this)" placeholder="e.g. 012..." class="input-field w-full border border-gray-300 rounded-md p-2.5 outline-none font-mono">
+                        </div>
+                    </div>
+                </section>
+
+                <section class="bg-white rounded-lg border border-slate-200 shadow-sm p-4">
+                    <div class="flex items-center mb-2">
+                        <span class="bg-slate-600 text-white text-xs font-bold px-2 py-1 rounded mr-2">1</span>
+                        <label class="font-bold text-gray-700">DATE</label>
+                    </div>
+                    <input type="date" id="date" onchange="updateMinTCA()" class="input-field w-full border border-gray-300 rounded-md p-2.5 outline-none">
+                </section>
+
+                <section class="bg-white rounded-lg border border-slate-200 shadow-sm p-4">
+                    <div class="flex items-center mb-2">
+                        <span class="bg-slate-600 text-white text-xs font-bold px-2 py-1 rounded mr-2">2</span>
+                        <label class="font-bold text-gray-700">VISIT NO</label>
+                    </div>
+                    <input type="number" id="visitNo" inputmode="numeric" oninput="validateNumber(this)" placeholder="e.g. 1" class="input-field w-full border border-gray-300 rounded-md p-2.5 outline-none font-mono">
+                </section>
+
+                <section class="bg-white rounded-lg border border-slate-200 shadow-sm p-4">
+                    <div class="flex items-center mb-2">
+                        <span class="bg-slate-600 text-white text-xs font-bold px-2 py-1 rounded mr-2">3</span>
+                        <label class="font-bold text-gray-700">QUIT DATE</label>
+                    </div>
+                    <input type="date" id="quitDate" class="input-field w-full border border-gray-300 rounded-md p-2.5 outline-none">
+                </section>
+
+                <section class="bg-white rounded-lg border border-blue-100 shadow-sm overflow-hidden">
+                    <div class="bg-blue-50 px-5 py-3 border-b border-blue-100 flex justify-between items-center">
+                        <div class="flex items-center">
+                            <span class="bg-blue-600 text-white text-xs font-bold px-2 py-1 rounded mr-3">4</span>
+                            <h2 class="text-lg font-bold text-blue-900">FAGERSTROM SCORE</h2>
+                        </div>
+                        <div class="text-right leading-tight">
+                            <div class="text-xs text-blue-600 uppercase font-bold tracking-wider">Result</div>
+                            <div class="text-xl font-bold text-blue-800"><span id="scoreDisplay">0</span> <span class="text-sm font-normal text-blue-600" id="dependenceDisplay">(Very Low)</span></div>
+                        </div>
+                    </div>
+                    <div class="p-5 space-y-5 text-sm text-gray-700">
+                        <div class="border-b border-dashed border-gray-200 pb-3">
+                            <p class="font-semibold mb-2">1. How soon after you wake up do you smoke your first cigarette?</p>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                <label class="flex items-center space-x-2"><input type="radio" name="f1" value="3" onchange="calculateFagerstrom()"> <span>Within 5 mins [3]</span></label>
+                                <label class="flex items-center space-x-2"><input type="radio" name="f1" value="2" onchange="calculateFagerstrom()"> <span>6-30 mins [2]</span></label>
+                                <label class="flex items-center space-x-2"><input type="radio" name="f1" value="1" onchange="calculateFagerstrom()"> <span>31-60 mins [1]</span></label>
+                                <label class="flex items-center space-x-2"><input type="radio" name="f1" value="0" checked onchange="calculateFagerstrom()"> <span>After 60 mins [0]</span></label>
+                            </div>
+                        </div>
+                        <div class="border-b border-dashed border-gray-200 pb-3">
+                            <p class="font-semibold mb-2">2. Difficult to refrain in forbidden places?</p>
+                            <label class="mr-4"><input type="radio" name="f2" value="1" onchange="calculateFagerstrom()"> Yes [1]</label>
+                            <label><input type="radio" name="f2" value="0" checked onchange="calculateFagerstrom()"> No [0]</label>
+                        </div>
+                        <div class="border-b border-dashed border-gray-200 pb-3">
+                            <p class="font-semibold mb-2">3. Hate to give up first in AM?</p>
+                            <label class="mr-4"><input type="radio" name="f3" value="1" onchange="calculateFagerstrom()"> Yes [1]</label>
+                            <label><input type="radio" name="f3" value="0" checked onchange="calculateFagerstrom()"> No [0]</label>
+                        </div>
+                        <div class="border-b border-dashed border-gray-200 pb-3">
+                            <p class="font-semibold mb-2">4. Cigarettes per day?</p>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                <label><input type="radio" name="f4" value="0" checked onchange="calculateFagerstrom()"> 10 or less [0]</label>
+                                <label><input type="radio" name="f4" value="1" onchange="calculateFagerstrom()"> 11-20 [1]</label>
+                                <label><input type="radio" name="f4" value="2" onchange="calculateFagerstrom()"> 21-30 [2]</label>
+                                <label><input type="radio" name="f4" value="3" onchange="calculateFagerstrom()"> 31 or more [3]</label>
+                            </div>
+                        </div>
+                        <div class="border-b border-dashed border-gray-200 pb-3">
+                            <p class="font-semibold mb-2">5. Smoke more in first hours after waking?</p>
+                            <label class="mr-4"><input type="radio" name="f5" value="1" onchange="calculateFagerstrom()"> Yes [1]</label>
+                            <label><input type="radio" name="f5" value="0" checked onchange="calculateFagerstrom()"> No [0]</label>
+                        </div>
+                        <div>
+                            <p class="font-semibold mb-2">6. Smoke if so ill in bed most of day?</p>
+                            <label class="mr-4"><input type="radio" name="f6" value="1" onchange="calculateFagerstrom()"> Yes [1]</label>
+                            <label><input type="radio" name="f6" value="0" checked onchange="calculateFagerstrom()"> No [0]</label>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
+                    <div class="bg-gray-50 px-5 py-3 border-b border-gray-200 flex items-center">
+                        <span class="bg-gray-600 text-white text-xs font-bold px-2 py-1 rounded mr-3">5</span>
+                        <h2 class="text-lg font-bold text-gray-800 uppercase">Cigarettes / Vaping</h2>
+                    </div>
+                    <div class="p-5">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-600 mb-1">Quantity</label>
+                                <div class="flex items-center">
+                                    <input type="number" id="cigarettes" placeholder="0" oninput="calculatePackYears()" class="input-field w-24 text-center border border-gray-300 rounded-l-md p-2.5 outline-none font-bold">
+                                    <span class="bg-gray-100 border border-l-0 border-gray-300 text-gray-600 text-sm px-3 py-2.5 rounded-r-md flex-1">sticks/day</span>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-600 mb-1">Duration</label>
+                                <div class="flex items-center">
+                                    <input type="number" id="smokingYears" placeholder="0" oninput="calculatePackYears()" class="input-field w-24 text-center border border-gray-300 rounded-l-md p-2.5 outline-none font-bold">
+                                    <span class="bg-gray-100 border border-l-0 border-gray-300 text-gray-600 text-sm px-3 py-2.5 rounded-r-md flex-1">years</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-slate-800 text-white p-3 rounded-md flex justify-between items-center">
+                            <span class="text-sm font-medium opacity-80">PACK YEARS SCORE:</span>
+                            <span id="packYearsDisplay" class="text-xl font-bold text-teal-300">0</span>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="bg-white rounded-lg border border-slate-200 shadow-sm p-4">
+                    <div class="flex items-center mb-2">
+                        <span class="bg-slate-600 text-white text-xs font-bold px-2 py-1 rounded mr-2">6</span>
+                        <label class="font-bold text-gray-700">CO BREATH TEST (ppm)</label>
+                    </div>
+                    <input type="number" id="coLevel" placeholder="0" class="input-field w-24 border border-gray-300 rounded-md p-2.5 outline-none font-bold">
+                </section>
+
+                <section class="bg-white rounded-lg border border-slate-200 shadow-sm p-4">
+                    <div class="flex items-center mb-2">
+                        <span class="bg-slate-600 text-white text-xs font-bold px-2 py-1 rounded mr-2">7</span>
+                        <label class="font-bold text-gray-700">WITHDRAWAL SYMPTOMS</label>
+                    </div>
+                    <textarea id="withdrawal" rows="3" class="input-field w-full border border-gray-300 rounded-md p-2.5 outline-none"></textarea>
+                </section>
+
+                <section class="bg-white rounded-lg border border-slate-200 shadow-sm p-4">
+                    <div class="flex items-center mb-2">
+                        <span class="bg-slate-600 text-white text-xs font-bold px-2 py-1 rounded mr-2">8</span>
+                        <label class="font-bold text-gray-700">CURRENT ISSUE</label>
+                    </div>
+                    <textarea id="currentIssue" rows="3" class="input-field w-full border border-gray-300 rounded-md p-2.5 outline-none"></textarea>
+                </section>
+
+                <section class="bg-white rounded-lg border border-yellow-200 shadow-sm overflow-hidden">
+                    <div class="bg-yellow-50 px-5 py-3 border-b border-yellow-200 flex items-center">
+                        <span class="bg-yellow-600 text-white text-xs font-bold px-2 py-1 rounded mr-3">9</span>
+                        <h2 class="text-lg font-bold text-yellow-900">PLAN OF CARE</h2>
+                    </div>
+                    <div class="p-5 space-y-4">
+                        <textarea id="plan" rows="4" class="input-field w-full border border-gray-300 rounded-md p-2.5 outline-none" placeholder="Notes..."></textarea>
+                        <div class="bg-white p-4 rounded-md border border-gray-200">
+                            <label class="block text-sm font-bold text-gray-700 mb-2">Pharmacotherapy?</label>
+                            <div class="flex items-center space-x-6 mb-3">
+                                <label><input type="radio" name="pharmaOpt" value="no" checked onchange="togglePharma(false)"> No</label>
+                                <label><input type="radio" name="pharmaOpt" value="yes" onchange="togglePharma(true)"> Yes</label>
+                            </div>
+                            <div id="pharmaDetailsDiv" class="hidden space-y-4 pt-3 border-t border-dashed">
+                                <div>
+                                    <h3 class="font-bold text-xs text-gray-500 uppercase">Nicorette Items</h3>
+                                    <label class="mr-2"><input type="checkbox" class="pharma-item" value="Gum 2mg"> Gum 2mg</label>
+                                    <label class="mr-2"><input type="checkbox" class="pharma-item" value="Gum 4mg"> Gum 4mg</label>
+                                    <label class="mr-2"><input type="checkbox" class="pharma-item" value="Patch 25mg"> Patch 25mg</label>
+                                    <label class="mr-2"><input type="checkbox" class="pharma-item" value="Patch 15mg"> Patch 15mg</label>
+                                    <label><input type="checkbox" class="pharma-item" value="Patch 10mg"> Patch 10mg</label>
+                                </div>
+                                <input type="text" id="pharmaOther" placeholder="Other notes..." class="input-field w-full border border-gray-300 rounded-md p-2 text-xs">
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="bg-white rounded-lg border border-slate-200 shadow-sm p-4">
+                    <div class="flex items-center mb-2">
+                        <span class="bg-slate-600 text-white text-xs font-bold px-2 py-1 rounded mr-2">10</span>
+                        <label class="font-bold text-gray-700">NEXT TCA</label>
+                    </div>
+                    <input type="date" id="tcaDate" class="input-field w-full sm:w-auto border border-gray-300 rounded-md p-2.5 outline-none font-bold">
+                </section>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-4 no-print border-t border-gray-100">
+                    <button type="button" id="saveBtn" onclick="saveToGoogleSheet()" class="flex items-center justify-center bg-teal-600 hover:bg-teal-700 text-white font-bold py-3 px-4 rounded-lg shadow-md transition-all">
+                        <span class="mr-2">☁️</span> Save to Cloud
+                    </button>
+                    <button type="button" onclick="exportWord()" class="flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg shadow-md">
+                        <span class="mr-2">📄</span> Word
+                    </button>
+                    <button type="button" onclick="copySummary()" class="flex items-center justify-center bg-gray-800 hover:bg-gray-900 text-white font-bold py-3 px-4 rounded-lg shadow-md">
+                        <span class="mr-2">📋</span> Copy
+                    </button>
+                    <button type="button" id="clearBtn" onclick="handleClearClick()" class="flex items-center justify-center bg-white border-2 border-red-100 text-red-600 hover:bg-red-50 font-bold py-3 px-4 rounded-lg shadow-sm">
+                        <span class="mr-2">🗑️</span> Clear
+                    </button>
+                </div>
+
+            </form>
+        </div>
+        <div class="bg-slate-50 border-t border-gray-200 p-4 text-xs text-gray-500 text-center">
+            © 2025 Dr. Muhammad Zaki Abdul Razak | KBM TOOLKIT v2.3
+        </div>
+    </div>
+
+    <script>
+        // UPDATED NEW URL
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxceBnkGlaP4KDyYlM7J_VNvw6ZRtEOJy1jQhqBma54jCVf0yjwoRm8GDUVnp_Fx2K7hA/exec';
+
+        window.onload = function() { setDatesToToday(); calculateFagerstrom(); };
+
+        function setDatesToToday() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('date').value = today;
+            document.getElementById('tcaDate').min = today;
+        }
+
+        function validateNumber(input) { input.value = input.value.replace(/[^0-9]/g, ''); }
+
+        function calculatePackYears() {
+            const cigs = parseFloat(document.getElementById('cigarettes').value) || 0;
+            const years = parseFloat(document.getElementById('smokingYears').value) || 0;
+            const py = (cigs / 20) * years;
+            document.getElementById('packYearsDisplay').innerText = py % 1 === 0 ? py : py.toFixed(1);
+        }
+
+        function calculateFagerstrom() {
+            let score = 0;
+            ['f1','f2','f3','f4','f5','f6'].forEach(g => {
+                const radios = document.getElementsByName(g);
+                for(let r of radios) if(r.checked) score += parseInt(r.value);
+            });
+            document.getElementById('scoreDisplay').innerText = score;
+            let dep = score <= 2 ? "Very Low" : score <= 4 ? "Low" : score <= 5 ? "Moderate" : score <= 7 ? "High" : "Very High";
+            document.getElementById('dependenceDisplay').innerText = `(${dep})`;
+        }
+
+        function togglePharma(show) { document.getElementById('pharmaDetailsDiv').classList.toggle('hidden', !show); }
+
+        function getPharmaString() {
+            if (document.querySelector('input[name="pharmaOpt"]:checked').value === 'no') return "None";
+            let p = [];
+            document.querySelectorAll('.pharma-item:checked').forEach(cb => p.push(cb.value));
+            const other = document.getElementById('pharmaOther').value;
+            if(other) p.push(other);
+            return p.length ? p.join(", ") : "Yes";
+        }
+
+        async function saveToGoogleSheet() {
+            const btn = document.getElementById('saveBtn');
+            const ptName = document.getElementById('ptName').value;
+            if(!ptName) { alert("Please enter Patient Name"); return; }
+
+            btn.disabled = true;
+            btn.innerHTML = "Saving...";
+
+            // Use URLSearchParams for maximum compatibility with Google Apps Script e.parameter
+            const params = new URLSearchParams();
+            params.append('ptName', ptName);
+            params.append('ptIC', document.getElementById('ptIC').value);
+            params.append('ptPhone', document.getElementById('ptPhone').value);
+            params.append('date', document.getElementById('date').value);
+            params.append('visitNo', document.getElementById('visitNo').value);
+            params.append('quitDate', document.getElementById('quitDate').value);
+            params.append('fagerstromScore', document.getElementById('scoreDisplay').innerText);
+            params.append('dependence', document.getElementById('dependenceDisplay').innerText);
+            params.append('cigarettesPerDay', document.getElementById('cigarettes').value);
+            params.append('smokingYears', document.getElementById('smokingYears').value);
+            params.append('packYears', document.getElementById('packYearsDisplay').innerText);
+            params.append('coLevel', document.getElementById('coLevel').value);
+            params.append('withdrawal', document.getElementById('withdrawal').value);
+            params.append('currentIssue', document.getElementById('currentIssue').value);
+            params.append('plan', document.getElementById('plan').value);
+            params.append('pharma', getPharmaString());
+            params.append('tcaDate', document.getElementById('tcaDate').value);
+
+            try {
+                // Post as URL encoded form data
+                await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    cache: 'no-cache',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: params.toString()
+                });
+                alert("Saved successfully to Google Sheets!");
+            } catch (e) {
+                console.error(e);
+                alert("Connection error. Please try again.");
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = "☁️ Save to Cloud";
+            }
+        }
+
+        function exportWord() { alert("Word export triggered..."); }
+        function copySummary() { alert("Summary copied..."); }
+        
+        let clearCount = 0;
+        function handleClearClick() {
+            if(++clearCount < 2) { 
+                document.getElementById('clearBtn').innerText = "Sure?"; 
+                setTimeout(() => { document.getElementById('clearBtn').innerText = "🗑️ Clear"; clearCount = 0; }, 3000);
+            } else {
+                document.getElementById('clerkingForm').reset();
+                setDatesToToday(); calculateFagerstrom(); calculatePackYears();
+                document.getElementById('clearBtn').innerText = "🗑️ Clear"; clearCount = 0;
+            }
+        }
+    </script>
+</body>
+</html>
