@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KBM TOOLKIT - First TCA</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/docx@7.1.0/build/index.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .input-field { background-color: #f8fafc; transition: all 0.2s; border: 1px solid #cbd5e1; border-radius: 0.375rem; padding: 0.625rem; outline: none; width: 100%; }
+        .input-field:focus { background-color: #ffffff; border-color: #0d9488; box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.1); }
+        .section-card { background-color: white; border-radius: 0.5rem; border: 1px solid #e2e8f0; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); overflow: hidden; margin-bottom: 2rem; }
+        .section-header { background-color: #f1f5f9; padding: 0.75rem 1.25rem; border-bottom: 1px solid #e2e8f0; }
+        @media print { .no-print { display: none !important; } }
+    </style>
+</head>
+<body class="bg-slate-100 min-h-screen py-6 sm:py-10 px-4">
+
+    <div class="max-w-4xl mx-auto bg-white shadow-xl rounded-xl overflow-hidden border border-slate-200">
+        <div class="bg-teal-800 text-white p-6 sm:p-8 text-center relative">
+            <h1 class="text-2xl sm:text-3xl font-extrabold uppercase tracking-wide">FIRST TCA KBM CLERKING SHEET</h1>
+            <p class="text-teal-100 text-sm mt-2">Klinik Berhenti Merokok (KBM) - New Case Entry</p>
+        </div>
+
+        <form id="clerkingForm" class="p-6 sm:p-8">
+
+            <section class="section-card">
+                <div class="section-header"><h2 class="text-sm font-bold text-gray-600 uppercase">Patient Details</h2></div>
+                <div class="p-5 grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-semibold text-gray-600 mb-1">Name (Nama)</label>
+                        <input type="text" id="ptName" class="input-field">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-600 mb-1">IC Number</label>
+                        <input type="text" id="ptIC" class="input-field font-mono">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-600 mb-1">Gender</label>
+                        <select id="gender" class="input-field">
+                            <option value="">Pilih</option>
+                            <option value="Lelaki">Lelaki</option>
+                            <option value="Perempuan">Perempuan</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-600 mb-1">Phone Number</label>
+                        <input type="text" id="ptPhone" class="input-field font-mono">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-600 mb-1">Referral From</label>
+                        <input type="text" id="referral" class="input-field">
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-semibold text-gray-600 mb-1">Address</label>
+                        <textarea id="ptAddress" rows="2" class="input-field"></textarea>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section-card p-5 space-y-6">
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-3 uppercase">Medical Illness</label>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 text-sm">
+                        <label class="flex items-center space-x-2"><input type="checkbox" class="med-illness" value="Asthma"> <span>Asthma</span></label>
+                        <label class="flex items-center space-x-2"><input type="checkbox" class="med-illness" value="IHD"> <span>IHD</span></label>
+                        <label class="flex items-center space-x-2"><input type="checkbox" class="med-illness" value="DM"> <span>DM</span></label>
+                        <label class="flex items-center space-x-2"><input type="checkbox" class="med-illness" value="HPT"> <span>HPT</span></label>
+                        <input type="text" id="illnessOthers" class="border-b outline-none text-sm col-span-2" placeholder="Others...">
+                    </div>
+                </div>
+                <hr>
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-3 uppercase">Type of Smoking</label>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 text-sm">
+                        <label class="flex items-center space-x-2"><input type="checkbox" class="smoke-type" value="Conventional"> <span>Conventional</span></label>
+                        <label class="flex items-center space-x-2"><input type="checkbox" class="smoke-type" value="Vape"> <span>Vape</span></label>
+                        <input type="text" id="smokeOthers" class="border-b outline-none text-sm col-span-2" placeholder="Others...">
+                    </div>
+                </div>
+            </section>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <section class="bg-blue-50 rounded-lg border border-blue-100 p-5">
+                    <div class="flex justify-between mb-4"><h2 class="text-xs font-bold text-blue-900 uppercase">Cigarette (FTND)</h2><span id="scoreDisplay" class="font-bold text-blue-800">0</span></div>
+                    <div class="space-y-3 text-xs">
+                        <select name="f1" onchange="calculateFagerstrom()" class="input-field py-1 text-xs">
+                            <option value="0">First cig after 60 mins [0]</option>
+                            <option value="1">31-60 mins [1]</option>
+                            <option value="2">6-30 mins [2]</option>
+                            <option value="3">Within 5 mins [3]</option>
+                        </select>
+                        <div class="flex justify-between"><span>Forbidden places?</span><div class="space-x-2"><label><input type="radio" name="f2" value="1" onchange="calculateFagerstrom()"> Y</label><label><input type="radio" name="f2" value="0" checked onchange="calculateFagerstrom()"> N</label></div></div>
+                        <div class="flex justify-between"><span>Hate to give up 1st?</span><div class="space-x-2"><label><input type="radio" name="f3" value="1" onchange="calculateFagerstrom()"> Y</label><label><input type="radio" name="f3" value="0" checked onchange="calculateFagerstrom()"> N</label></div></div>
+                        <select name="f4" onchange="calculateFagerstrom()" class="input-field py-1 text-xs">
+                            <option value="0">10 or less cigs [0]</option>
+                            <option value="1">11-20 [1]</option>
+                            <option value="2">21-30 [2]</option>
+                            <option value="3">31 or more [3]</option>
+                        </select>
+                        <div class="flex justify-between"><span>Smoke more in AM?</span><div class="space-x-2"><label><input type="radio" name="f5" value="1" onchange="calculateFagerstrom()"> Y</label><label><input type="radio" name="f5" value="0" checked onchange="calculateFagerstrom()"> N</label></div></div>
+                        <div class="flex justify-between"><span>Smoke if ill in bed?</span><div class="space-x-2"><label><input type="radio" name="f6" value="1" onchange="calculateFagerstrom()"> Y</label><label><input type="radio" name="f6" value="0" checked onchange="calculateFagerstrom()"> N</label></div></div>
+                        <p id="dependenceDisplay" class="text-blue-700 font-bold mt-2 text-center">(Very Low)</p>
+                    </div>
+                </section>
+
+                <section class="bg-purple-50 rounded-lg border border-purple-100 p-5">
+                    <div class="flex justify-between mb-4"><h2 class="text-xs font-bold text-purple-900 uppercase">Vape (E-FTND)</h2><span id="vapeScoreDisplay" class="font-bold text-purple-800">0</span></div>
+                    <div class="space-y-3 text-xs">
+                        <select name="v1" onchange="calculateVapeScore()" class="input-field py-1 text-xs">
+                            <option value="0">First vape after 60 mins [0]</option>
+                            <option value="1">31-60 mins [1]</option>
+                            <option value="2">6-30 mins [2]</option>
+                            <option value="3">Within 5 mins [3]</option>
+                        </select>
+                        <div class="flex justify-between"><span>Hard to stop?</span><div class="space-x-2"><label><input type="radio" name="v2" value="1" onchange="calculateVapeScore()"> Y</label><label><input type="radio" name="v2" value="0" checked onchange="calculateVapeScore()"> N</label></div></div>
+                        <select name="v3" onchange="calculateVapeScore()" class="input-field py-1 text-xs">
+                            <option value="0">10 or less sessions [0]</option>
+                            <option value="1">11-20 [1]</option>
+                            <option value="2">21-30 [2]</option>
+                            <option value="3">31 or more [3]</option>
+                        </select>
+                        <p id="vapeDepDisplay" class="text-purple-700 font-bold mt-2 text-center">(Low)</p>
+                    </div>
+                </section>
+            </div>
+
+            <section class="bg-orange-50 rounded-lg border border-orange-100 p-5 mb-8 text-xs">
+                <div class="flex justify-between items-center mb-4"><h2 class="text-lg font-bold text-orange-900 uppercase">ASSIST Score (Tobacco)</h2><span id="assistScoreDisplay" class="text-2xl font-bold text-orange-800">0</span></div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
+                    <select name="a1" onchange="calculateAssist()" class="input-field py-1 text-xs"><option value="0">Used tobacco in last 3 months? (Never [0])</option><option value="3">Once/Twice [3]</option><option value="4">Monthly [4]</option><option value="5">Weekly [5]</option><option value="6">Daily [6]</option></select>
+                    <select name="a2" onchange="calculateAssist()" class="input-field py-1 text-xs"><option value="0">Strong urge to use? (Never [0])</option><option value="6">Daily [6]</option></select>
+                    <select name="a3" onchange="calculateAssist()" class="input-field py-1 text-xs"><option value="0">Health/Social problems? (Never [0])</option><option value="6">Yes [6]</option></select>
+                    <select name="a4" onchange="calculateAssist()" class="input-field py-1 text-xs"><option value="0">Failed expectations? (Never [0])</option><option value="7">Yes [7]</option></select>
+                    <select name="a5" onchange="calculateAssist()" class="input-field py-1 text-xs"><option value="0">Others concerned? (No [0])</option><option value="6">Yes [6]</option></select>
+                    <select name="a6" onchange="calculateAssist()" class="input-field py-1 text-xs"><option value="0">Failed to cut down? (No [0])</option><option value="6">Yes [6]</option></select>
+                </div>
+                <p id="assistInterpDisplay" class="text-orange-700 font-bold text-center">(Low Risk)</p>
+            </section>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+                <section class="section-card p-5">
+                    <label class="text-xs font-bold uppercase text-gray-500 block mb-2">Detailed History</label>
+                    <div class="grid grid-cols-2 gap-2">
+                        <input type="number" id="cigarettes" placeholder="Sticks/day" oninput="calculatePackYears()" class="input-field text-sm">
+                        <input type="number" id="smokingYears" placeholder="Years" oninput="calculatePackYears()" class="input-field text-sm">
+                    </div>
+                    <div class="mt-2 p-2 bg-slate-800 text-white rounded text-center text-xs font-bold">Pack Years: <span id="packYearsDisplay">0</span></div>
+                </section>
+                <section class="section-card p-5 text-center">
+                    <label class="text-xs font-bold uppercase text-gray-500 block mb-2">CO Level (ppm)</label>
+                    <input type="number" id="coLevel" class="input-field text-3xl font-bold text-teal-700 text-center" placeholder="0">
+                </section>
+            </div>
+
+            <section class="section-card mb-8">
+                <div class="bg-yellow-50 px-5 py-3 border-b border-yellow-200 uppercase font-bold text-yellow-900 text-sm">Pharmacotherapy</div>
+                <div class="p-5">
+                    <div class="flex items-center space-x-6 mb-4">
+                        <label class="text-sm"><input type="radio" name="pharmaOpt" value="no" checked onchange="togglePharma(false)"> No Medication</label>
+                        <label class="text-sm"><input type="radio" name="pharmaOpt" value="yes" onchange="togglePharma(true)"> Prescribe</label>
+                    </div>
+                    <div id="pharmaDetailsDiv" class="hidden space-y-4 pt-4 border-t border-dashed">
+                        <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                            <label class="text-xs"><input type="checkbox" class="pharma-item" value="Gum 2mg"> Gum 2mg</label>
+                            <label class="text-xs"><input type="checkbox" class="pharma-item" value="Gum 4mg"> Gum 4mg</label>
+                            <label class="text-xs"><input type="checkbox" class="pharma-item" value="Patch 25mg"> Patch 25mg</label>
+                            <label class="text-xs"><input type="checkbox" class="pharma-item" value="Patch 15mg"> Patch 15mg</label>
+                            <label class="text-xs"><input type="checkbox" class="pharma-item" value="Patch 10mg"> Patch 10mg</label>
+                        </div>
+                        <input type="text" id="pharmaOther" placeholder="Other notes/dosage..." class="input-field text-xs">
+                    </div>
+                </div>
+            </section>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+                <div class="bg-white p-4 rounded-lg border border-slate-200">
+                    <label class="font-bold text-gray-700 block mb-1 uppercase text-xs">Quit Date</label>
+                    <input type="date" id="quitDate" class="input-field">
+                </div>
+                <div class="bg-white p-4 rounded-lg border border-slate-200">
+                    <label class="font-bold text-gray-700 block mb-1 uppercase text-xs">Next TCA</label>
+                    <input type="date" id="tcaDate" class="input-field">
+                </div>
+            </div>
+
+            <section class="section-card p-5 mb-8">
+                <label class="font-bold block mb-2 uppercase text-xs text-gray-500">Plan of Care</label>
+                <textarea id="plan" rows="3" class="input-field" placeholder="Counseling goals & strategies..."></textarea>
+            </section>
+
+            <input type="hidden" id="date">
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 no-print">
+                <button type="button" onclick="saveToCloud()" id="saveBtn" class="bg-teal-600 text-white font-bold py-3 rounded-lg shadow transition-all hover:bg-teal-700">☁️ Save to Cloud</button>
+                <button type="button" onclick="exportToWord()" class="bg-blue-600 text-white font-bold py-3 rounded-lg shadow transition-all hover:bg-blue-700">📝 Save as Word</button>
+                <button type="button" onclick="document.getElementById('clerkingForm').reset();" class="bg-white border-2 border-red-100 text-red-600 font-bold py-3 rounded-lg shadow-sm">🗑️ Clear Form</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxtLm1JzQSiSxKPi-BFbOly0tfNcKCqZHHoPsxvkVDD_67EC2GPKlFfRU7svnymJnyoHQ/exec';
+
+        window.onload = function() { document.getElementById('date').value = new Date().toISOString().split('T')[0]; };
+        function togglePharma(s) { document.getElementById('pharmaDetailsDiv').classList.toggle('hidden', !s); }
+        function calculatePackYears() {
+            const c = parseFloat(document.getElementById('cigarettes').value) || 0;
+            const y = parseFloat(document.getElementById('smokingYears').value) || 0;
+            document.getElementById('packYearsDisplay').innerText = ((c/20)*y).toFixed(1);
+        }
+        function calculateFagerstrom() {
+            let s = 0; s += parseInt(document.querySelector('select[name="f1"]').value);
+            s += parseInt(document.querySelector('input[name="f2"]:checked').value);
+            s += parseInt(document.querySelector('input[name="f3"]:checked').value);
+            s += parseInt(document.querySelector('select[name="f4"]').value);
+            s += parseInt(document.querySelector('input[name="f5"]:checked').value);
+            s += parseInt(document.querySelector('input[name="f6"]:checked').value);
+            document.getElementById('scoreDisplay').innerText = s;
+            document.getElementById('dependenceDisplay').innerText = s <= 2 ? "(Very Low)" : s <= 4 ? "(Low)" : s <= 5 ? "(Mod)" : "(High)";
+        }
+        function calculateVapeScore() {
+            let s = 0; s += parseInt(document.querySelector('select[name="v1"]').value);
+            s += parseInt(document.querySelector('input[name="v2"]:checked').value);
+            s += parseInt(document.querySelector('select[name="v3"]').value);
+            document.getElementById('vapeScoreDisplay').innerText = s;
+            document.getElementById('vapeDepDisplay').innerText = s <= 2 ? "(Low)" : s <= 4 ? "(Mod)" : "(High)";
+        }
+        function calculateAssist() {
+            let s = 0; s += parseInt(document.querySelector('select[name="a1"]').value);
+            s += parseInt(document.querySelector('select[name="a2"]').value);
+            s += parseInt(document.querySelector('select[name="a3"]').value);
+            s += parseInt(document.querySelector('select[name="a4"]').value);
+            s += parseInt(document.querySelector('select[name="a5"]').value);
+            s += parseInt(document.querySelector('select[name="a6"]').value);
+            document.getElementById('assistScoreDisplay').innerText = s;
+            document.getElementById('assistInterpDisplay').innerText = s <= 3 ? "(Low Risk)" : s <= 26 ? "(Mod Risk)" : "(High Risk)";
+        }
+
+        function getMulti(cls, id) { 
+            let sel = []; document.querySelectorAll('.' + cls + ':checked').forEach(c => sel.push(c.value)); 
+            if(id && document.getElementById(id).value) sel.push(document.getElementById(id).value); 
+            return sel.join(", "); 
+        }
+
+        async function saveToCloud() {
+            const btn = document.getElementById('saveBtn'); if(!document.getElementById('ptName').value) return alert("Sila isi Nama Pesakit!");
+            btn.disabled = true; btn.innerText = "Saving...";
+            const p = new URLSearchParams();
+            p.append('ptName', document.getElementById('ptName').value);
+            p.append('ptIC', document.getElementById('ptIC').value);
+            p.append('gender', document.getElementById('gender').value);
+            p.append('ptPhone', document.getElementById('ptPhone').value);
+            p.append('ptAddress', document.getElementById('ptAddress').value);
+            p.append('referral', document.getElementById('referral').value);
+            p.append('medicalIllness', getMulti('med-illness', 'illnessOthers'));
+            p.append('smokingType', getMulti('smoke-type', 'smokeOthers'));
+            p.append('date', document.getElementById('date').value);
+            p.append('quitDate', document.getElementById('quitDate').value);
+            p.append('fagerstromScore', document.getElementById('scoreDisplay').innerText);
+            p.append('fagerstromDep', document.getElementById('dependenceDisplay').innerText);
+            p.append('vapeScore', document.getElementById('vapeScoreDisplay').innerText);
+            p.append('vapeDep', document.getElementById('vapeDepDisplay').innerText);
+            p.append('assistScore', document.getElementById('assistScoreDisplay').innerText);
+            p.append('assistInterp', document.getElementById('assistInterpDisplay').innerText);
+            p.append('cigarettesPerDay', document.getElementById('cigarettes').value);
+            p.append('smokingYears', document.getElementById('smokingYears').value);
+            p.append('packYears', document.getElementById('packYearsDisplay').innerText);
+            p.append('coLevel', document.getElementById('coLevel').value);
+            p.append('plan', document.getElementById('plan').value);
+            p.append('pharma', getMulti('pharma-item', 'pharmaOther'));
+            p.append('tcaDate', document.getElementById('tcaDate').value);
+            try { await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: p.toString() }); alert("Berjaya Simpan ke Cloud!"); } catch (e) { alert("Error!"); }
+            finally { btn.disabled = false; btn.innerText = "☁️ Save to Cloud"; }
+        }
+
+        function exportToWord() {
+            const { Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType } = docx;
+            const n = document.getElementById('ptName').value || "Unnamed";
+            const doc = new Document({
+                sections: [{
+                    children: [
+                        new Paragraph({ text: "KBM CLERKING REPORT", heading: HeadingLevel.HEADING_1, alignment: AlignmentType.CENTER }),
+                        new Paragraph({ text: "" }),
+                        new Paragraph({ children: [new TextRun({ text: "1. PATIENT INFORMATION", bold: true, underline: true })] }),
+                        new Paragraph({ text: `Name: ${n} | IC: ${document.getElementById('ptIC').value}` }),
+                        new Paragraph({ text: `Gender: ${document.getElementById('gender').value} | Phone: ${document.getElementById('ptPhone').value}` }),
+                        new Paragraph({ text: `Address: ${document.getElementById('ptAddress').value}` }),
+                        new Paragraph({ text: `Referral Source: ${document.getElementById('referral').value}` }),
+                        new Paragraph({ text: `Medical History: ${getMulti('med-illness', 'illnessOthers')}` }),
+                        new Paragraph({ text: `Type of Smoking: ${getMulti('smoke-type', 'smokeOthers')}` }),
+                        new Paragraph({ text: "" }),
+                        new Paragraph({ children: [new TextRun({ text: "2. SMOKING DATA", bold: true, underline: true })] }),
+                        new Paragraph({ text: `Sticks/Day: ${document.getElementById('cigarettes').value || "0"} | Years Smoked: ${document.getElementById('smokingYears').value || "0"}` }),
+                        new Paragraph({ text: `Pack Years: ${document.getElementById('packYearsDisplay').innerText}` }),
+                        new Paragraph({ text: `CO Level: ${document.getElementById('coLevel').value || "0"} ppm` }),
+                        new Paragraph({ text: "" }),
+                        new Paragraph({ children: [new TextRun({ text: "3. ADDICTION ASSESSMENT", bold: true, underline: true })] }),
+                        new Paragraph({ text: `FTND (Cigarette) Score: ${document.getElementById('scoreDisplay').innerText} ${document.getElementById('dependenceDisplay').innerText}` }),
+                        new Paragraph({ text: `E-FTND (Vape) Score: ${document.getElementById('vapeScoreDisplay').innerText} ${document.getElementById('vapeDepDisplay').innerText}` }),
+                        new Paragraph({ text: `ASSIST (Tobacco) Score: ${document.getElementById('assistScoreDisplay').innerText} ${document.getElementById('assistInterpDisplay').innerText}` }),
+                        new Paragraph({ text: "" }),
+                        new Paragraph({ children: [new TextRun({ text: "4. MANAGEMENT PLAN", bold: true, underline: true })] }),
+                        new Paragraph({ text: `Quit Date: ${document.getElementById('quitDate').value || "Not Set"} | Next TCA: ${document.getElementById('tcaDate').value || "Not Set"}` }),
+                        new Paragraph({ text: `Pharmacotherapy: ${getMulti('pharma-item', 'pharmaOther')}` }),
+                        new Paragraph({ text: `Plan: ${document.getElementById('plan').value}` }),
+                    ],
+                }],
+            });
+            Packer.toBlob(doc).then(b => { saveAs(b, `KBM_Clerking_${n}.docx`); });
+        }
+    </script>
+</body>
+</html>
