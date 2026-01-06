@@ -10,7 +10,6 @@
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #f1f5f9; }
         .input-field { background-color: #ffffff; border: 1px solid #cbd5e1; padding: 0.5rem; border-radius: 0.375rem; width: 100%; }
-        .score-box { transition: all 0.3s ease; }
         @media print { .no-print { display: none !important; } }
     </style>
 </head>
@@ -67,10 +66,11 @@
                 </section>
 
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    <div class="score-box border rounded-2xl overflow-hidden shadow-sm">
+                    <div class="border rounded-2xl overflow-hidden shadow-sm">
                         <div class="bg-blue-700 text-white px-5 py-3 flex justify-between items-center">
                             <span class="font-bold uppercase tracking-wider text-sm">Fagerström (Cigarette)</span>
-                            <span id="fagResult" class="font-black text-lg">0 (Very Low)</span>
+                            <span id="fagResultDisplay" class="font-black text-lg">0 (Very Low)</span>
+                            <input type="hidden" id="fagerstrom" name="fagerstrom" value="0 (Very Low)">
                         </div>
                         <div class="p-5 space-y-4 text-xs">
                             <div><p class="mb-1 font-semibold">1. Time to first cigarette after waking?</p>
@@ -94,10 +94,11 @@
                         </div>
                     </div>
 
-                    <div class="score-box border rounded-2xl overflow-hidden shadow-sm">
+                    <div class="border rounded-2xl overflow-hidden shadow-sm">
                         <div class="bg-purple-700 text-white px-5 py-3 flex justify-between items-center">
                             <span class="font-bold uppercase tracking-wider text-sm">Vape Addiction (V-FTND)</span>
-                            <span id="vapeResult" class="font-black text-lg">0 (Low)</span>
+                            <span id="vapeResultDisplay" class="font-black text-lg">0 (Low)</span>
+                            <input type="hidden" id="vapeScore" name="vapeScore" value="0 (Low)">
                         </div>
                         <div class="p-5 space-y-4 text-xs">
                             <div><p class="mb-1 font-semibold">1. How soon after waking do you vape?</p>
@@ -116,12 +117,13 @@
                 <section class="bg-amber-50 border-2 border-amber-200 rounded-2xl overflow-hidden shadow-sm">
                     <div id="assistHeader" class="bg-amber-600 text-white px-6 py-4 flex justify-between items-center">
                         <span class="font-bold uppercase tracking-widest text-lg">ASSIST Score (Tobacco)</span>
-                        <span id="assistResult" class="font-black text-xl">0 - LOW RISK</span>
+                        <span id="assistResultDisplay" class="font-black text-xl">0 - LOW RISK</span>
+                        <input type="hidden" id="assistScore" name="assistScore" value="0 - LOW RISK">
                     </div>
                     <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6 text-xs">
                         <div>
                             <p class="font-bold mb-2">Q1: In the past 3 months, how often have you used tobacco?</p>
-                            <select onchange="calcAssist()" class="assist-q input-field"><option value="0">Never (0)</option><option value="3">Once or Twice (3)</option><option value="4">Monthly (4)</option><option value="6">Weekly (6)</option><option value="6">Daily/Almost Daily (6)</option></select>
+                            <select onchange="calcAssist()" class="assist-q input-field"><option value="0">Never (0)</option><option value="3">Once or Twice (3)</option><option value="4">Monthly (4)</option><option value="6">Weekly (6)</option></select>
                         </div>
                         <div>
                             <p class="font-bold mb-2">Q2: How often have you had a strong desire or urge to use?</p>
@@ -129,19 +131,19 @@
                         </div>
                         <div>
                             <p class="font-bold mb-2">Q3: How often has use led to health, social or legal problems?</p>
-                            <select onchange="calcAssist()" class="assist-q input-field"><option value="0">Never (0)</option><option value="5">Yes, but not in last 3 months (5)</option><option value="7">Yes, in the last 3 months (7)</option></select>
+                            <select onchange="calcAssist()" class="assist-q input-field"><option value="0">Never (0)</option><option value="5">Yes, but not recently (5)</option><option value="7">Yes, in the last 3 months (7)</option></select>
                         </div>
                         <div>
                             <p class="font-bold mb-2">Q4: Have you failed to do what was expected of you because of use?</p>
-                            <select onchange="calcAssist()" class="assist-q input-field"><option value="0">Never (0)</option><option value="5">Yes, but not in last 3 months (5)</option><option value="7">Yes, in the last 3 months (7)</option></select>
+                            <select onchange="calcAssist()" class="assist-q input-field"><option value="0">Never (0)</option><option value="5">Yes, but not recently (5)</option><option value="7">Yes, in the last 3 months (7)</option></select>
                         </div>
                         <div>
                             <p class="font-bold mb-2">Q5: Has a friend/relative expressed concern about your use?</p>
-                            <select onchange="calcAssist()" class="assist-q input-field"><option value="0">No (0)</option><option value="3">Yes, but not in last 3 months (3)</option><option value="6">Yes, in the last 3 months (6)</option></select>
+                            <select onchange="calcAssist()" class="assist-q input-field"><option value="0">No (0)</option><option value="3">Yes, not recently (3)</option><option value="6">Yes, in the last 3 months (6)</option></select>
                         </div>
                         <div>
-                            <p class="font-bold mb-2">Q6: Have you ever tried and failed to control, cut down or stop?</p>
-                            <select onchange="calcAssist()" class="assist-q input-field"><option value="0">No (0)</option><option value="3">Yes, but not in last 3 months (3)</option><option value="6">Yes, in the last 3 months (6)</option></select>
+                            <p class="font-bold mb-2">Q6: Have you ever tried and failed to control or stop?</p>
+                            <select onchange="calcAssist()" class="assist-q input-field"><option value="0">No (0)</option><option value="3">Yes, not recently (3)</option><option value="6">Yes, in the last 3 months (6)</option></select>
                         </div>
                     </div>
                 </section>
@@ -159,7 +161,7 @@
 
                 <section class="bg-teal-50/50 border-2 border-teal-100 p-8 rounded-2xl">
                     <h3 class="font-black text-teal-900 mb-4 uppercase tracking-tighter">Plan of Care & Intervention</h3>
-                    <textarea id="plan" name="plan" rows="4" class="input-field mb-6 shadow-inner" placeholder="Counselling notes and clinical plan..."></textarea>
+                    <textarea id="plan" name="plan" rows="4" class="input-field mb-6 shadow-inner" placeholder="Counselling notes..."></textarea>
                     
                     <div class="bg-white p-6 rounded-xl border border-teal-200 mb-6">
                         <p class="font-bold text-sm text-teal-800 mb-4">Pharmacotherapy Prescribed:</p>
@@ -171,11 +173,9 @@
                         </div>
                     </div>
 
-                    <div class="flex items-center space-x-4">
-                        <div class="flex-1">
-                            <label class="block font-bold text-teal-800 mb-1 text-xs uppercase">Next TCA Appointment</label>
-                            <input type="date" id="tcaDate" name="tcaDate" class="input-field font-bold">
-                        </div>
+                    <div class="flex-1">
+                        <label class="block font-bold text-teal-800 mb-1 text-xs uppercase">Next TCA Appointment</label>
+                        <input type="date" id="tcaDate" name="tcaDate" class="input-field font-bold">
                     </div>
                 </section>
 
@@ -197,7 +197,6 @@
     <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;" onload="if(submitted){alert('Sync Successful!');}"></iframe>
 
     <script>
-        // UPDATED WEB URL
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzlPlXyDuCZXMHA592T2xVaD4MNNFa9aHW26V2k4gxwPF32WRdN3DxvJINYojAD28PBMg/exec'; 
         let submitted = false;
 
@@ -206,17 +205,18 @@
             fetchDashboard();
         };
 
-        // SCORING LOGIC (PRESERVED)
         function calcFag() {
             let s = 0; document.querySelectorAll('.fag-q').forEach(q => s += parseInt(q.value));
             let i = s <= 2 ? "Very Low" : s <= 4 ? "Low" : s <= 6 ? "Moderate" : "High";
-            document.getElementById('fagResult').innerText = `${s} (${i})`;
+            document.getElementById('fagResultDisplay').innerText = `${s} (${i})`;
+            document.getElementById('fagerstrom').value = `${s} (${i})`;
         }
 
         function calcVape() {
             let s = 0; document.querySelectorAll('.vape-q').forEach(q => s += parseInt(q.value));
             let i = s <= 3 ? "Low" : s <= 5 ? "Moderate" : "High";
-            document.getElementById('vapeResult').innerText = `${s} (${i})`;
+            document.getElementById('vapeResultDisplay').innerText = `${s} (${i})`;
+            document.getElementById('vapeScore').value = `${s} (${i})`;
         }
 
         function calcAssist() {
@@ -224,44 +224,38 @@
             let i = "LOW RISK", c = "bg-amber-600";
             if(s >= 4 && s <= 26) { i = "MODERATE RISK"; c = "bg-orange-500"; }
             else if(s >= 27) { i = "HIGH RISK"; c = "bg-red-600"; }
-            const res = document.getElementById('assistResult');
-            res.innerText = `${s} - ${i}`;
+            document.getElementById('assistResultDisplay').innerText = `${s} - ${i}`;
+            document.getElementById('assistScore').value = `${s} - ${i}`;
             document.getElementById('assistHeader').className = `${c} text-white px-6 py-4 flex justify-between items-center`;
         }
 
-        // NUCLEAR SAVE LOGIC (PRESERVED)
         function nuclearSave() {
             const btn = document.getElementById('saveBtn');
-            const name = document.getElementById('ptName').value;
-            if(!name) return alert("Please enter Patient Name");
-
+            if(!document.getElementById('ptName').value) return alert("Please enter Patient Name");
             btn.disabled = true; btn.innerText = "Syncing...";
             
             const form = document.createElement('form');
             form.method = 'POST'; form.action = SCRIPT_URL; form.target = 'hidden_iframe';
 
+            // Collect checkboxes separately
             const pharma = Array.from(document.querySelectorAll('input[name="pharma"]:checked')).map(c => c.value).join(", ");
-            const data = {
-                ptName: document.getElementById('ptName').value,
-                ptIC: document.getElementById('ptIC').value,
-                visitNo: document.getElementById('visitNo').value,
-                visitDate: document.getElementById('visitDate').value,
-                quitDate: document.getElementById('quitDate').value,
-                fagerstrom: document.getElementById('fagResult').innerText,
-                vapeScore: document.getElementById('vapeResult').innerText,
-                assistScore: document.getElementById('assistResult').innerText,
-                coLevel: document.getElementById('coLevel').value,
-                withdrawal: document.getElementById('withdrawal').value,
-                plan: document.getElementById('plan').value,
-                pharma: pharma,
-                tcaDate: document.getElementById('tcaDate').value
-            };
+            
+            // Collect all inputs/selects/textareas from the clerkingForm
+            const inputs = document.getElementById('clerkingForm').querySelectorAll('input, select, textarea');
+            inputs.forEach(input => {
+                if (input.name && input.name !== 'pharma') {
+                    const hiddenInput = document.createElement('input');
+                    hiddenInput.type = 'hidden';
+                    hiddenInput.name = input.name;
+                    hiddenInput.value = input.value;
+                    form.appendChild(hiddenInput);
+                }
+            });
 
-            for (const key in data) {
-                const input = document.createElement('input');
-                input.type = 'hidden'; input.name = key; input.value = data[key];
-                form.appendChild(input);
-            }
+            // Add the combined pharma list
+            const pharmaInput = document.createElement('input');
+            pharmaInput.type = 'hidden'; pharmaInput.name = 'pharma'; pharmaInput.value = pharma;
+            form.appendChild(pharmaInput);
 
             document.body.appendChild(form);
             submitted = true;
@@ -272,32 +266,26 @@
         async function saveToWord() {
             const { Document, Packer, Paragraph, TextRun, HeadingLevel } = docx;
             const pharma = Array.from(document.querySelectorAll('input[name="pharma"]:checked')).map(c => c.value).join(", ");
-            
             const doc = new Document({
                 sections: [{
-                    properties: {},
                     children: [
-                        new Paragraph({ text: "KBM TOOLKIT - CLINICAL RECORD", heading: HeadingLevel.HEADING_1 }),
-                        new Paragraph({ children: [new TextRun({ text: `Patient: ${document.getElementById('ptName').value}`, bold: true })] }),
+                        new Paragraph({ text: "KBM TOOLKIT CLINICAL RECORD", heading: HeadingLevel.HEADING_1 }),
+                        new Paragraph({ text: `Patient: ${document.getElementById('ptName').value}`, bold: true }),
                         new Paragraph({ text: `IC: ${document.getElementById('ptIC').value}` }),
                         new Paragraph({ text: `Visit Date: ${document.getElementById('visitDate').value}` }),
                         new Paragraph({ text: `Quit Date: ${document.getElementById('quitDate').value}` }),
-                        new Paragraph({ text: "----------------------------------------------------" }),
-                        new Paragraph({ text: `Fagerström Score: ${document.getElementById('fagResult').innerText}` }),
-                        new Paragraph({ text: `Vape Addiction Score: ${document.getElementById('vapeResult').innerText}` }),
-                        new Paragraph({ text: `ASSIST Tobacco Score: ${document.getElementById('assistResult').innerText}` }),
+                        new Paragraph({ text: `Fagerström: ${document.getElementById('fagerstrom').value}` }),
+                        new Paragraph({ text: `Vape: ${document.getElementById('vapeScore').value}` }),
+                        new Paragraph({ text: `ASSIST: ${document.getElementById('assistScore').value}` }),
                         new Paragraph({ text: `CO Level: ${document.getElementById('coLevel').value} ppm` }),
-                        new Paragraph({ text: "----------------------------------------------------" }),
-                        new Paragraph({ text: "PLAN OF CARE:", bold: true }),
-                        new Paragraph({ text: document.getElementById('plan').value }),
-                        new Paragraph({ text: `Pharmacotherapy: ${pharma}` }),
+                        new Paragraph({ text: `Plan: ${document.getElementById('plan').value}` }),
+                        new Paragraph({ text: `Medication: ${pharma}` }),
                         new Paragraph({ text: `Next TCA: ${document.getElementById('tcaDate').value}`, bold: true }),
                     ],
                 }],
             });
-
             const blob = await Packer.toBlob(doc);
-            saveAs(blob, `KBM_Record_${document.getElementById('ptIC').value}.docx`);
+            saveAs(blob, `KBM_${document.getElementById('ptIC').value || 'Record'}.docx`);
         }
 
         async function fetchDashboard() {
@@ -306,7 +294,7 @@
                 const stats = await response.json();
                 document.getElementById('dashTotal').innerText = stats.total || 0;
                 document.getElementById('dashHighRisk').innerText = stats.highRisk || 0;
-            } catch (e) { console.log("Stats fetch blocked by firewall - continuing local session."); }
+            } catch (e) { console.log("Stats fetch blocked by firewall."); }
         }
 
         async function searchPatient() {
@@ -320,9 +308,9 @@
                     document.getElementById('ptIC').value = data.ic;
                     document.getElementById('quitDate').value = data.quitDate;
                     document.getElementById('visitNo').value = parseInt(data.lastVisit || 0) + 1;
-                    alert("Record Found: Auto-filled previous data.");
+                    alert("Record Found and Auto-filled.");
                 } else { alert("No patient found."); }
-            } catch (e) { alert("Network restriction: Search unavailable."); }
+            } catch (e) { alert("Search restricted by firewall."); }
         }
     </script>
 </body>
